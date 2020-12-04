@@ -18,6 +18,7 @@
 package hessian
 
 import (
+	"fmt"
 	"io"
 	"reflect"
 )
@@ -261,7 +262,7 @@ func (d *Decoder) decMap(flag int32) (interface{}, error) {
 				}
 				v, err = d.Decode()
 				if err != nil {
-					return nil, err
+					return nil, fmt.Errorf("decode reg-pojo value, type: %s, key: %+v; \ncause: %w", t, k, err)
 				}
 
 				fieldName, ok = k.(string)
@@ -295,7 +296,7 @@ func (d *Decoder) decMap(flag int32) (interface{}, error) {
 				}
 				v, err = d.Decode()
 				if err != nil {
-					return nil, err
+					return nil, fmt.Errorf("decode unreg-pojo value, type: %s, key: %+v; \ncause: %w", t, k, err)
 				}
 				m[k] = v
 			}
@@ -316,7 +317,7 @@ func (d *Decoder) decMap(flag int32) (interface{}, error) {
 			}
 			v, err = d.Decode()
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("decode untyped-map value, type: %s, key: %+v, \ncause: %w", t, k, err)
 			}
 			m[k] = v
 		}
