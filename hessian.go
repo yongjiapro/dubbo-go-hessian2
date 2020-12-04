@@ -19,7 +19,9 @@ package hessian
 
 import (
 	"bufio"
+	"encoding/base64"
 	"encoding/binary"
+	"fmt"
 	"time"
 )
 
@@ -209,7 +211,8 @@ func (h *HessianCodec) ReadBody(rspObj interface{}) error {
 	case PackageResponse:
 		if rspObj != nil {
 			if err = unpackResponseBody(NewDecoder(buf[:]), rspObj); err != nil {
-				return perrors.WithStack(err)
+				nerr := fmt.Errorf("unpack response body, bytes: %s, error: %w", base64.StdEncoding.EncodeToString(buf[:]), err)
+				return perrors.WithStack(nerr)
 			}
 		}
 	}
@@ -241,7 +244,8 @@ func (h *HessianCodec) ReadAttachments() (map[string]string, error) {
 	case PackageResponse:
 		rspObj := &Response{}
 		if err = unpackResponseBody(NewDecoderWithSkip(buf[:]), rspObj); err != nil {
-			return nil, perrors.WithStack(err)
+			nerr := fmt.Errorf("unpack response body, bytes: %s, error: %w", base64.StdEncoding.EncodeToString(buf[:]), err)
+			return nil, perrors.WithStack(nerr)
 		}
 		return rspObj.Attachments, nil
 	}

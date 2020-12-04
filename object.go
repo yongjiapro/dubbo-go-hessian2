@@ -377,7 +377,8 @@ func findField(name string, typ reflect.Type) ([]int, *reflect.StructField, erro
 
 func (d *Decoder) decInstance(typ reflect.Type, cls *classInfo) (interface{}, error) {
 	if typ.Kind() != reflect.Struct {
-		return nil, perrors.Errorf("wrong type expect Struct but get:%s", typ.String())
+		return nil, perrors.Errorf("wrong type expect Struct but get:%s, class: %s, arguments: %+v, data: %s",
+			typ.String(), cls.javaName, cls.fieldNameList, string(cls.buffer))
 	}
 
 	vRef := reflect.New(typ)
